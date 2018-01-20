@@ -1,0 +1,159 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Amethysta|Duru+Sans">
+    <style>
+	h1{
+	    font-family: 'Amethysta', serif;
+		color:#DB3556;
+		font-size: 32px;		
+	}
+	ol{
+		color: #BA1E4A;
+	}
+	a{
+		color: #BA1E4A;
+		font-size: 18px;
+		text-decoration: none;
+	}
+	h2{
+		font-family: 'Amethysta', serif;
+		color:#88BAA3;
+		font-size: 28px;
+	}
+	h3{
+	    font-family: 'Amethysta', serif;
+		color:#88BAA3;
+		font-size: 24px;		
+	}	
+	body{
+		background-color:#EAEDE4;
+	}
+      p {
+        font-family: 'Amethysta', serif;
+		font-size: 20px;
+		color:#254F4D;
+      }
+	  xmp{
+		font-family: 'Duru Sans', sans-serif;
+		background-color:#E4E6C3;
+		border:1px solid #BA1E4A;
+		font-size: 16px;
+		color: #BA1E4A;
+	  }
+	  #terminal{
+		font-family: 'Duru Sans', sans-serif;
+		font-size: 14px;
+		border:1px solid black;
+		color:#88BAA3;
+		background-color:#6E6E6E;
+	  }		  
+	  #file{
+		font-family: 'Duru Sans', sans-serif;
+		font-size: 14px;
+		color:#848484;
+	  }	  
+    </style>
+</head>
+<body>
+<h1>Monster Book Tutorial</h1>
+<a href="#1"> Getting Started | </a><br/>
+
+<h2 id="1"> Getting Started</h2>
+<p>
+I had an idea for a monster coloring book for my niece and nephew and decided to do this as a webapp. The first thing to do is get a simple canvas drawing application. HTML5 has a canvas element that can let users draw on the screen, set fill and stroke colors, set line widths, and create paths. Basically everything you need for a simple paint application. We'll start with a simple canvas that just mimics a pencil. We'll use the canvas element on the page and add a message for people visiting the page with an unsupported browser.
+</p>
+<div class="file">demo.html</div>
+<xmp>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Paint</title>
+    <style type="text/css"><!--
+      #container { position: relative; }
+      #imageView { border: 1px solid #000; }
+    --></style>
+  </head>
+  <body>
+    <div id="container">
+      <canvas id="imageView" width="400" height="300">
+        <p>Unfortunately, your browser is currently unsupported by our web 
+        application.  Please use one of the 
+        supported browsers listed below.</p>
+        <p>Supported browsers: <a href="http://www.google.com/chrome">Chrome</a>,
+		<a href="http://www.opera.com">Opera</a>, <a 
+          href="http://www.mozilla.com">Firefox</a>, <a 
+          href="http://www.apple.com/safari">Safari</a>, and <a 
+          href="http://www.konqueror.org">Konqueror</a>.</p>
+      </canvas>
+    </div>
+
+    <script type="text/javascript" src="example1.js"></script>
+  </body>
+</html>
+</xmp>
+<p>
+We'll put everything into an anonymous function that gets called on window load. We'll add an event listener and intialize the canvas element. We need to attach mousemove event listener to the canvas element. Every time the mouse moves, the event handler will run and draw a line from the last place on the canvas to the new location. This mimics a pencil tool on the canvas. This will start a line and continue it.
+</p>
+<div class="file">example1.js</div>
+<xmp>
+// Keep everything in anonymous function, called on window load.
+if(window.addEventListener) {
+window.addEventListener('load', function () {
+  var canvas, context;
+
+  // Initialization sequence.
+  function init () {
+    // Find the canvas element.
+    canvas = document.getElementById('imageView');
+    if (!canvas) {
+      console.log('Error: I cannot find the canvas element!');
+      return;
+    }
+
+    if (!canvas.getContext) {
+      console.log('Error: no canvas.getContext!');
+      return;
+    }
+
+    // Get the 2D canvas context.
+    context = canvas.getContext('2d');
+    if (!context) {
+      console.log('Error: failed to getContext!');
+      return;
+    }
+
+    // Attach the mousemove event handler.
+    canvas.addEventListener('mousemove', ev_mousemove, false);
+  }
+
+  // The mousemove event handler.
+  var started = false;
+  function ev_mousemove (ev) {
+    var x, y;
+
+    // Get the mouse position relative to the canvas element.
+    if (ev.layerX || ev.layerX == 0) { // Firefox
+      x = ev.layerX;
+      y = ev.layerY;
+    } else if (ev.offsetX || ev.offsetX == 0) { // Opera
+      x = ev.offsetX;
+      y = ev.offsetY;
+    }
+
+    // The event handler works like a drawing pencil which tracks the mouse 
+    // movements. We start drawing a path made up of lines.
+    if (!started) {
+      context.beginPath();
+      context.moveTo(x, y);
+      started = true;
+    } else {
+      context.lineTo(x, y);
+      context.stroke();
+    }
+  }
+  init();
+}, false); }
+</xmp>
+</body>
+</html>

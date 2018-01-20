@@ -1,0 +1,1286 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Amethysta|Duru+Sans">
+    <style>
+	h1{
+	    font-family: 'Amethysta', serif;
+		color:#DB3556;
+		font-size: 32px;		
+	}
+	ol{
+		color: #BA1E4A;
+	}
+	a{
+		color: #BA1E4A;
+		font-size: 18px;
+		text-decoration: none;
+	}
+	h2{
+		font-family: 'Amethysta', serif;
+		color:#88BAA3;
+		font-size: 28px;
+	}
+	h3{
+	    font-family: 'Amethysta', serif;
+		color:#88BAA3;
+		font-size: 24px;		
+	}	
+	body{
+		background-color:#EAEDE4;
+	}
+      p {
+        font-family: 'Amethysta', serif;
+		font-size: 20px;
+		color:#254F4D;
+      }
+	  xmp{
+		font-family: 'Duru Sans', sans-serif;
+		background-color:#E4E6C3;
+		border:1px solid #BA1E4A;
+		font-size: 16px;
+		color: #BA1E4A;
+	  }
+	  #terminal{
+		font-family: 'Duru Sans', sans-serif;
+		font-size: 14px;
+		border:1px solid black;
+		color:#88BAA3;
+		background-color:#6E6E6E;
+	  }		  
+	  #file{
+		font-family: 'Duru Sans', sans-serif;
+		font-size: 14px;
+		color:#848484;
+	  }	  
+    </style>
+</head>
+<body>
+<h1>Ruby on Rails Quick Start Guide</h1>
+<a href="#1"> Getting Started | </a><a href="#2"> Using Bootstrap | </a><a href="#3"> Deploying to the Cloud with Heroku</a><br/>
+<a href="#4"> Add Users to the App with Devise |</a>
+<a href="#5"> Model View Controller Example: Pins </a><br/>
+<a href="#6"> Pins and User Associations |</a>
+<a href="#7"> Authentication |</a>
+<a href="#8"> Saving the images</a><br/>
+<a href="#9"> Extending the App |</a>
+<a href="#10"> Adding Validations |</a>
+<a href="#11"> Other Ruby Resources </a><br/>
+
+<h2 id="1"> Getting Started</h2>
+<p>
+So far my relevant notes are, use a nice installer like RailsInstaller (engine yard) for creating your tech stack easily.
+</p>
+
+<p>
+Use the git bash shell as your command line.</p>
+<div id="terminal">
+$ rails -v<br>
+$ ruby -v
+</div>
+<p>
+To a new project, navigate in bash to the root dir:
+</p>
+
+<div id="terminal">
+$ rails new pinteresting
+ <br>
+$ cd pinteresting
+</div>
+
+<p>
+to run the server from root </p>
+<div id="terminal">
+$ rails server</div>
+<p>
+To create a homepage:
+</p>
+<div id="terminal">
+$ rails generate controller pages home</div>
+<p>
+then navigate to the new page listed: 
+</p>
+<div id="file">app/views/pages/home.html.erb</div> 
+<p>and change the html to what you want
+to change your routing, like add your home page</p>
+<div id="file">/config/routes.rb</div> 
+<xmp>
+get "pages/home"
+get "about" => "pages#about"
+</xmp>
+<p>Change the above to</p>
+<xmp>
+root "pages#home"
+</xmp>
+<p>
+Let's look at how to create more pages. Before we added pages automatically with </p>
+<div id="terminal">$rails generate controller pages home</div>
+<p>
+but if we wanted to manually add those pages, got to do three things: add the controller, add the view, and add the route:
+/app/controllers/pages_controller.rb add another def/end for our new page
+</p>
+
+<div id="file">app/controllers/pages_controller.rb</div> 
+<xmp>
+def about 
+end 
+</xmp>
+<p>
+create a view
+go to app/views/pages and add your new page
+
+Add your route:
+</p>
+<div id="file">config/routes.rb</div> 
+<xmp>
+get "about" => "pages#about"
+</xmp>
+<p>
+What is Embedded Ruby?:
+.erb files are embedded ruby files, so you can use html, and ruby and rails in the file.
+</p>
+<p>
+So you could add a link using standard html </p>
+<xmp>
+<a href='#'>here</a>
+</xmp> 
+<p>or use a rails function to create the link:
+</p>
+<xmp>
+<%= link_to "here", "#" %>
+</xmp>
+<p>
+If you do a view page source, the application processes the erb file and shows only the user html. We'll look next at navigation links.
+</p>
+<p>
+In rails, layouts make it easy to create navigation bars that show up on every page in the app. Adding this to the layout, makes it so we don't have to add it manually to the top of all the pages. root_path and about_path were created from the root and get lines we added earlier into routes.rb
+</p>
+<div id="file">
+apps/views/layouts/application.html.erb</div> 
+<xmp>
+<%= link_to "Home", root_path %>
+<%= link_to "About", about_path %>
+</xmp>
+
+<h2 id="2"> Using Bootstrap</h2>
+<p>
+Bootstrap is a front end framework that lets control how things look very easily. It allows the site to be responsive and gives us access to icon and other presentation type things.
+</p>
+<p>
+Resources:
+http://getbootstrap.com/
+http://www.rubygems.org/
+</p>
+<p>
+Add bootstrap gem:</p>
+<div id="file">/Gemfile</div> 
+
+<xmp>
+gem 'bootstrap-sass'
+</xmp>
+<p>
+After installing a new gem:</p>
+<div id="terminal">
+$ bundle install
+</div>
+<p>
+We'll create a new SCSS file, which is a precompiler for CSS:
+</p>
+<div id="file">app/assets/stylesheets/bootstrap_and_customization.css.scss</div> 
+<xmp>
+@import 'bootstrap';
+</xmp>
+<p>
+Now we can restart the server.
+</p>
+<div id="terminal">
+$ rails server
+</div>
+<p>
+Now we want the html we're rendering to use the bootstrap css:
+</p>
+<div id="file">views/layouts/application.html.erb</div>
+<xmp>
+     <%= link_to "Home", root_path %>
+     <%= link_to "About", about_path %>
+     <div class="container">
+          <%= yield %>
+     </div>
+</xmp>
+<p>
+We'll use a partial header to wrap our navigation. Create the file 
+</p>
+<div id="file">app/views/layouts/_header.html.erb</div>
+<p>
+Add the link to the partial and the navigation bar:
+</p>
+<div id="file">app/views/layouts/application.html.erb</div>
+<xmp>
+     <%= render 'layouts/header' %>
+</xmp>
+
+<div id="file">app/views/layouts/_header.html.erb</div>
+<xmp>
+<nav class="navbar navbar-default" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#">Pinteresting</a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav navbar-right">
+      <li><%= link_to "Home", root_path %></li>
+      <li><%= link_to "About", about_path %></li> 
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+</xmp>	 
+<p>
+We'll need to update our javascript to require bootstrap:
+</p>
+<div id="file">app/assets/javascripts/application.js</div>
+<xmp>
+...
+//= require jquery
+//= require jquery_ujs
+//= require bootstrap
+//= require turbolinks
+//= require_tree .
+</xmp>	 
+<p>
+We'll add a viewport for the intial load:
+</p>
+<div id="file">views/layouts/application.html.erb</div>
+<xmp>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</xmp>
+<p>
+Now let's have some fun with bootstrap. We'll add the Jumbotron to the home page:
+</p>
+<div id="file">views/pages/home.html.erb</div>
+<xmp>
+<div class="jumbotron">
+	<h1>Welcome to my app!</h1>
+	Click here to <%= link_to "Sign Up", "#", class: "btn btn-primary" %>
+</div>
+</xmp>
+<p>
+We can add some custom styles using bootstrap. 
+Resources: 
+http://getbootstrap.com/customize/#variables-basics
+http://flatuicolors.com/
+http://startbootstrap.com/
+</p>
+<div id="file">app/views/layouts/_header.html.erb</div>
+<xmp>
+<nav class="navbar navbar-inverse navbar-default" role="navigation">
+</xmp>
+
+
+<div id="file">app/assets/stylessheets/bootstrap_and_customization.css.scss</div>
+
+<xmp>
+$body-bg: #ecf0f1;
+$navbar-inverse-bg: #27ae60;
+$navbar-inverse-link-color: white;
+$brand-primary: #f39c12;
+$jumbotron-bg: #bdc3c7;
+@import 'bootstrap';
+</xmp>
+
+<div id="file">apps/views/layouts/_header.html.erb</div>
+<xmp>
+<nav class="navbar navbar-static-top navbar-default" role="navigation">
+  <div class="container">
+...
+</div><!-- /.container --> 
+</nav>
+</xmp>
+
+<div id="file">app/assets/stylessheets/bootstrap_and_customization.css.scss</div>
+<xmp>
+@import url(http://fonts.googleapis.com/css?family=Lato:400,700);
+
+$body-bg:                                                   #ecf0f1;
+$font-family-sans-serif:                'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$navbar-height:                                        45px;
+$navbar-default-bg:                          white;
+$navbar-default-brand-color:      #c0392b;
+$brand-primary:                                    #c0392b;
+$jumbotron-bg:                                         white;
+
+@import 'bootstrap';
+
+.center {
+     text-align: center;
+}
+
+.navbar-brand {
+     font-weight: bold;
+}
+</xmp>
+
+<div id="file">/app/views/pages/home.html.erb</div>
+<xmp>
+<div class="jumbotron center">
+     <h1>Welcome to my app!</h1>
+     <p>
+       <%= link_to "Log in", "#", class: "btn btn-default btn-lg" %>
+       <%= link_to "Sign up", "#", class: "btn btn-primary btn-lg" %>
+  </p>    
+</div>
+</xmp>
+
+<h2 id="3">Deploying to the Cloud with Heroku</h2>
+<p>Heroku lets us deploy the app to the cloud. You'll need to sign up for an heroku account. It only uses a postgres database though so you will need to update your gemfile to use this in production.</p>
+
+<div id="file">/Gemfile</div>
+<xmp>
+	group :development, :test do
+		 gem 'sqlite3'
+	end
+
+	group :production do
+		 gem 'pg'
+		 gem 'rails_12factor'
+	end
+</xmp>
+<div id="terminal">
+	$heroku login <br>
+	Email: (enter your email) <br>
+	Password (enter your password - it will show blank and that's fine) <br>
+	$ heroku keys:add<br>
+	$ heroku create<br>
+	$ git push heroku master<br>
+	$ heroku run rake db:migrate<br>
+</div>	
+
+
+<h2 id="4"> Add Users to the App with Devise </h2>
+<p>First we'll add the devise gem. Then we'll install it on the command line.</p>
+	<div id="file">/Gemfile</div>
+	<xmp>
+		gem 'devise'
+	</xmp>
+
+<div id="terminal">
+$ bundle install<br/>
+$ rails generate devise:install
+</div>	
+<p>Now we'll configure Devise for our different environments, use your heroku url (here pinteresting-commits) is just an example.</p>	
+
+<div id="file">config/environments/development.rb</div>
+<xmp>
+	config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+</xmp>
+
+<div id="file">config/environments/production.rb</div>
+<xmp>
+	config.action_mailer.default_url_options = { :host => 'http://pinteresting-commits.herokuapp.com/' }
+</xmp>
+
+<p>A flash message is something like "thanks for logging in" that comes after an action.</p>	
+
+<div id="file">app/views/layouts/application.html.erb</div>
+<xmp>
+	<% flash.each do |name, msg| %>
+		 <%= content_tag(:div, msg, class: "alert alert-info") %>
+	<% end %>
+</xmp>
+
+<p>Set the precompile to false (required for heroku), and then install the devise views</p>	
+
+<div id="file">config/application.rb</div>
+<xmp>
+	config.assets.initialize_on_precompile = false
+</xmp>
+<div id="terminal">
+$ rails g devise:views<br/>
+</div>	
+
+<p>Now we'll generate a user model on the command line and migrate our db</p>	
+<div id="terminal">
+$ rails generate devise user<br/>
+$ rake db:migrate<br/>
+$ rails server<br/>
+</div>	
+
+<p>Update our view and header partial to try to log us in</p>	
+<div id="file">app/views/pages/home.html.erb</div>
+<xmp>
+	<div class="jumbotron center">
+		 <h1>Welcome to my app!</h1>
+		 <% if user_signed_in? %>
+			  # do something
+		 <% else %>
+		   <p>
+			 <%= link_to "Log in", new_user_session_path, class: "btn btn-default btn-lg" %>
+			 <%= link_to "Sign up", new_user_registration_path, class: "btn btn-primary btn-lg" %>
+		   </p>
+	  <% end %>  
+	</div>
+</xmp>
+
+<div id="file">app/views/layout/_header.html.erb</div>
+<xmp>
+	<ul class="nav navbar-nav navbar-right">
+        <li><%= link_to "Home", root_path %></li>
+        <li><%= link_to "About", about_path %></li>
+        <% if user_signed_in? %>
+          <li><%= link_to "Log out", destroy_user_session_path, method: :delete %></li>
+        <% else %>
+          <li><%= link_to "Sign in", new_user_session_path %></li>
+        <% end %>
+    </ul>
+</xmp>
+
+<h2 id="5"> Model View Controller Example: Pins </h2>
+<p>
+example: Pins
+
+We'll store images and strings, description of the images.
+<h3>Generate Pins Scaffold</h3>
+Now that we have users, add the pins.
+</p>
+<div id="terminal">
+$ rails generate scaffold pins description:string
+</div>
+<p>
+This is a rails command to generate everythign related to pins. We also add a datatype for the pin, which is a description which is a string. You can look up other things on the getting started with rails guides and look up scaffolds to find other data types.
+</p>
+<p>
+Running this command creates a migrate file for us also for the db. Look at tihs file, it adds strings and timestamps. Now migrate the database.
+</p>
+<div id="terminal">
+$ rake db:migrate #run the migration
+</div>
+<p>
+This also adds some css which changes how our application looks. 
+</p>
+<div id="file">app/assets/stylesheets/scaffolds.css.scss</div>
+
+<p>
+We could have:
+</p>
+<div id="terminal">
+$ rails generate scaffold pins description:string --skip-stylesheets
+</div>
+<p>
+to have it skip the css generation. Now run the app, we have a pins page:
+
+http://localhost:3000/pins
+
+<h3>Routes</h3>
+So this has added itself to our routes page:
+</p>
+<div id="file">config\routes.rb</div>
+<xmp>
+Pinteresting::Application.routes.draw do
+  resources :pins
+
+  devise_for :users
+  root "pages#home"
+  get "about" => "pages#about"
+  get "contact" => "pages#contact"
+</xmp> 
+<p>
+  This does "Show, Edit, Destroy" basically all we need to manage the life cycle of this object.
+</p>  
+<h3> Resources and MVC </h3>  
+<p>
+So we saw how to create a new pin, edit a pin, and destroy a pin. These make up a resource: anything you can create, read, update and destroy (CRUD). So every web application can be broken out into resources and how they relate to each other.
+</p>
+<p>
+For example Twitter: Users (create read update and destroy), Tweet, Sessions
+Facebook: users, status updates, photos
+</p>
+<p>
+Since we ran the generate command, we have pins model, pins controller, and a pins view.
+</p>
+<p>
+The routes are how your application knows what action to do inside what controller when a user gets to a certain page. For example we went to http://localhost:3000/pins and the routes.rb creates a number of routes:
+</p>
+<div id="terminal">
+$ rake routes
+</div>
+<p>
+This will show all the routes. You see pins#update, pins#edit, etc, a bunch of new routes related to pins.
+</p>
+<p>
+The verb:
+Create - Post
+Read - Get
+Update - Put
+Destroy - Delete
+</p>
+<p>
+The uri pattern is the url, and then the controller#Action.
+
+http://localhost:3000/pins/new
+
+That takes us to a new pin, you can try the edit pin path:
+localhost:3000/pins/1/edit this is pins/:id/edit
+
+This id is the generated id from creating the pin
+</p>
+<h3>Pins Controller</h3>
+<p>
+The pins_controller.rb defines the actions: index, show, new, edit. etc. There's two private callbacks a set_pin and pin_params
+</p>
+<p>
+Some things you want to do to an object require two actions. If I waned to create a new pin, the first thing is I would go to a page to put in the information in that would create the page to put the information in, and then I would actually hit "Create Pin" which would create the resource. 
+</p>
+<p>
+Create = new + create
+Read/show
+update = edit + update
+Destroy = Destroy
+Read All = index
+</p>
+<p>
+The json lines are your code for the api to this action, we automatically get this which is nice.
+</p>
+<xmp>
+  def create
+    @pin = Pin.new(pin_params)
+
+    respond_to do |format|
+      if @pin.save
+        format.html { redirect_to @pin, notice: 'Pin was successfully created.' }
+        format.json { render action: 'show', status: :created, location: @pin }
+      else
+        format.html { render action: 'new' }
+        format.json { render json: @pin.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+ </xmp>
+ 
+ <h3>Pins Views</h2>
+ <p>
+ We see all the views for the pins actions. By default the controller will load the view that is the same name as the controller. This is the index.html.erb under pins. It is creating table entries in a for each loop with the actions as the links.
+ </p>
+<div id="file">app/views/pins/index.html.erb</div>
+ <xmp>
+ <table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @pins.each do |pin| %>
+      <tr>
+        <td><%= pin.description %></td>
+        <td><%= link_to 'Show', pin %></td>
+        <td><%= link_to 'Edit', edit_pin_path(pin) %></td>
+        <td><%= link_to 'Destroy', pin, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+ </xmp>
+ <p>
+ We can also now commit to git
+ </p>
+ <div id="terminal">
+$git add .<br/>
+$git commit -am "added pins scaffold"<br/>
+$git push heroku master<br/>
+   </div>
+   <p>
+and migrate the database on heroku
+</p>
+<div id="terminal">
+$ heroku run rake db:migrate
+   </div>
+ <p>  
+If it has trouble pushing to heroku you can force your version:</p>
+<div id="terminal">
+$ git push -f heroku master #the -f forces the changes to save 
+   </div>
+   
+ <h2 id="6">Pins and User Associations</h2>
+<p> 
+ Right now any user can see any pin and destroy any pin even if we're not signed in. We use associations between resources:
+  http://guides.rubyonrails.org/association_basics.html
+  </p><p>
+  There are 6 main associations: belongs_to, has_one, has_many, has_many :through, has_one :through, has_and_belongs_to_many.
+  </p><p>
+  We need to tell the application how the users and related to the pins. In this case a user has many pins, and the pins belong to the user. For example with orders and customers, the order belongs to the customer. The customer can have many orders. We'll need to create new columns in our database to keep track of user_ids for each pin, because right now our pins only have a timestamp and a descriptive string. Once we keep track of the userID then we'll able to match the pins to the owners.
+  </p>
+  <p>
+  So a pin belongs to a user:
+  </p>
+<div id="file">app/models/pin.rb</div>
+  <xmp>
+ class Pin < ActiveRecord::Base
+	belongs_to :user
+end
+  </xmp>
+ <p>
+ and a User has_many pins:</p>
+<div id="file">app/models/user.rb</div>
+  <xmp>
+class User < ActiveRecord::Base
+  # Include default devise modules. Others available are:
+  # :token_authenticatable, :confirmable,
+  # :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable
+
+  has_many :pins
+end
+  </xmp>
+ <p>
+ The Rails console allows us to interact directly with data in the database. You'll do this to update data directly, or mostly just for testing out Ruby code before bringing it into your project. From the rails console we can query about these objects. We can first create a pin
+ </p>
+<div id="terminal"> 
+> @Pin = Pin.first
+   </div>
+  <p>
+ Then we can see the user:<p>
+ <div id="terminal">
+ >@pin.user
+  </div>
+  <p>
+ Here the user is undefined (nil:NilClass). We need to add another column for the user id, and lets set an index on that column since we'll be using it to do look ups against often.
+ </p>
+  <div id="terminal">
+ $ rails generate migration add_user_id_to_pins user_id:integer:index
+   </div>
+   <p>
+ If you look at the database migration file that gets generated you'll see it adds the user_id as an integer. Again we add it to our database.
+ </p>
+ <div id="terminal">
+ $ rake db:migrate
+  </div>
+ We can test it in the rails console:
+ <div id="terminal">
+ > @pin = Pin.first<br/>
+ > @pin.user = 1<br/>
+ > @pin.save<br/>
+ > @user = User.first<br/>
+ > @user.pins<br/>
+ </div>
+  <h2 id="7">Authentication</h2>
+ <p> 
+  We don't want just anyone to be able to see or edit anyone else's pins. Right now new pins are not associated with the user that creates them. So we need to add this into the PinsController and we'll use some devise methods to get the current user.
+ </p> 
+<div id="file">app/controllers/pins_controller.rb</div>
+ <p> 
+  Instead of</p>
+  <xmp>
+    def new
+    @pin = Pin.new
+  end
+	</xmp>
+  <p>we'll have</p>
+  <xmp>  
+    def new
+    @pin = current_user.pins.build
+  end
+  	</xmp>
+  
+  <p>You could also do this inside of the console</p>
+  <div id="terminal">
+  > @user<br/>
+  > @user.pin<br/>
+  > @user.pins.build<br/>
+  > Pin.new<br/>
+ </div> 
+  <p>We'll also update the create to use this method.</p>
+    <xmp>
+    def create
+    @pin = current_user.pins.build(pin_params)
+
+    respond_to do |format|
+      if @pin.save
+        format.html { redirect_to @pin, notice: 'Pin was successfully created.' }
+        format.json { render action: 'show', status: :created, location: @pin }
+      else
+        format.html { render action: 'new' }
+        format.json { render json: @pin.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  	</xmp>  
+  <p>Let's update the view to show the user's email address but only show it if pin.user is defined:</p>
+  <xmp>
+          <td><%= pin.user.email if pin.user %></td>
+        <td><%= pin.description %></td>
+</xmp>
+
+<p>You can also use the Ruby try method instead:</p>
+  <xmp>
+<%= pin.user.try(:email) %>
+</xmp>  
+<p>
+But still any user can delete a pin, even if it is not their user pin, and we're not ensuring users are logged in before creating, editing, etc:
+</p>
+<p>
+Resource: https://github.com/plataformatec/devise
+We'll want to prevent this by checking the user id and making sure a user is logged in. Devise has another method for this called a before_filter, before_filter and before_action are the same thing. We can specifiy that in the PinsController. We could do this:
+</p>
+  <xmp>
+before_action :authenticate_user!, only: [:new, :create, :edit, :destroy...]
+ </xmp> 
+<p>
+That's a lot, we can use except instead:</p>
+  <xmp>
+before_action :authenticate_user!, except: [:index, :show]
+ </xmp> 
+ 
+<p>We can put conditions around the links:</p>
+<div id="file">app/views/pins/index.html.erb</div>
+
+  <xmp>
+<% if user_signed_in? %>
+  <%= link_to 'New Pin', new_pin_path %>
+<% end %>
+ </xmp> 
+ 
+<p>Add some embedded ruby to see if the pin's user is the current pin.</p>
+
+  <xmp>
+<% if pin.user == current_user %>
+  <%= link_to 'Edit', edit_pin_path(pin) %>
+  <%= link_to 'Destroy', pin, method: :delete, data: { confirm: 'Are you sure?' } %>
+<% end %>
+ </xmp> 
+ 
+<p>Since the show action will be different then edit, destroy that anyone can do we should add another method for the correct_user:</p>
+
+<div id="file">app/controllers/pins_controller.rb</div>
+  <xmp>
+def correct_user
+      @pin = current_user.pins.find_by(id: params[:id])
+      redirect_to pins_path, notice: "Not authorized to edit this pin" if @pin.nil?
+    end
+ </xmp>
+<p>And update the before_action to use this for editing, etc pins:</p>
+  <xmp>
+before_action :correct_user, only: [:show, :edit, :update, :destroy]
+ </xmp>
+<p>We use an @ symbol before when pulling the pin from the controller.</p>
+
+<h2 id="8">Saving the images</h2>
+<p>
+We'l.l use the Image Magick gem for converting nad formatting the images, it's also a requisite for Paperclip.</p>
+<p>
+Windows:
+http://www.imagemagick.org/script/binary-releases.php#windows
+
+mac:
+http://cactuslab.com/imagemagick/
+</p>
+<p>
+Check if it is installed:
+</p>
+<div id="terminal">
+$ identify
+</div>
+<p>
+Install the Paperclip Gem
+
+https://github.com/thoughtbot/paperclip
+</p>
+<div id="file">/Gemfile</div>
+  <xmp>
+gem 'paperclip', '~> 3.0'
+ </xmp>
+<div id="terminal">
+$ bundle install 
+</div>
+<div id="file">/app/models/pins.rb</div>
+  <xmp>
+class Pin < ActiveRecord::Base
+     belongs_to :user
+     has_attached_file :image, :styles => { :medium => "300x300>", :thumb => "100x100>" }
+end
+ </xmp>
+<div id="terminal">
+$ Srails generate paperclip pin image<br/>
+$ rake db:migrate <br/>
+$ rake db:migrate:status<br/>
+</div>
+<p>
+We'll add an image to the pin form:</p>
+<div id="file">/app/views/pins/_form.html.erb</div>
+
+<xmp>
+<%= form_for @pin, html: { multipart: true } do |f| %>
+.
+.
+.
+  <div class="form-group">
+    <%= f.label :image %>
+    <%= f.file_field :image, class: "form-control" %>
+  </div>
+.
+.
+.
+</xmp>
+
+<p>Update the controller to require the image and description</p>
+
+<div id="file">/app/controllers/pins_controller.rb</div>
+<xmp>
+    def pin_params
+      params.require(:pin).permit(:description, :image)
+    end
+</xmp>	
+<p>
+Update the view to show the image:</p>
+
+<div id="file">/app/views/pins/show.html.erb</div>
+<xmp>
+<%= image_tag @pin.image.url %>
+</xmp>
+<p>Update pins index</p>
+<div id="file">/app/views/pins/index.html.erb</div>
+
+<xmp>
+<h1>Listing pins</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>Image</th>
+      <th>User</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @pins.each do |pin| %>
+      <tr>
+        <td><%= pin.description %></td>
+        <td><%= image_tag pin.image.url(:medium) %></td>
+        <td><%= pin.user.email if pin.user %></td>
+        <td><%= link_to 'Show', pin %></td>
+        <% if pin.user == current_user %>
+         <td> <%= link_to 'Edit', edit_pin_path(pin) %></td>
+         <td> <%= link_to 'Destroy', pin, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+<% if user_signed_in? %>
+  <%= link_to 'New Pin', new_pin_path %>
+<% end %>
+</xmp>
+
+<p>Update the show page:</p>
+
+<div id="file">/app/views/pins/show.html.erb</div>
+<xmp>
+<%= image_tag @pin.image.url(:medium) %>
+</xmp>
+
+<p>How could we delete the pins not made by any user?</p>
+<div id="terminal">
+$ rails console<br/>
+$ Pin.first<br/>
+$ pin = Pin.first<br/>
+$ pin.destroy<br/>
+$ Pin.first.destroy<br/>
+</div>
+<h2>Using Amazon S3 to upload images</h2>
+<p>Heroku doesn't store images so we need to use Amazon Web Services for that.
+
+https://devcenter.heroku.com/articles/paperclip-s3
+</p>
+<div id="file">/Gemfile</div>
+<xmp>
+gem 'aws-sdk', '~> 1.20.0'
+</xmp>
+come back to later
+
+<h2 id="9">Extending the App</h2>
+<h3>Styling the app with jQuery Masonry</h3>
+
+<div id="file">/Gemfile</div>
+
+<xmp>
+gem 'jquery-turbolinks'
+
+gem 'masonry-rails', '~> 0.2.0'
+</xmp>
+<div id="terminal">
+$ bundle install
+</div>
+<p>Modify the application javascript:</p>
+<div id="file">/app/assets/javascripts/application.js</div>
+<xmp>
+//= require masonry/jquery.masonry
+</xmp>
+<p>Modify the css:</p>
+<div id="file">/app/assets/stylesheets/application.css</div>
+<xmp>
+ *= require 'masonry/transitions'
+ </xmp>
+ <p>Update Pins Index to use new look:</p>
+<div id="file"> /app/views/pins/index.html.erb</div>
+
+ <xmp>
+<div id="pins">
+  <% @pins.each do |pin| %>
+    <div class="box">
+      <%= image_tag pin.image.url(:medium) %>
+      <%= pin.description %>
+      <%= pin.user.email if pin.user %>
+      <%= link_to 'Show', pin_path(pin) %>
+      <% if pin.user == current_user %>
+        <%= link_to 'Edit', edit_pin_path(pin) %>
+        <%= link_to 'Destroy', pin, method: :delete, data: { confirm: 'Are you sure?' } %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+</xmp>
+
+<p>Since we lost our "New Pin" part, we'll add directly from the header:</p>
+<div id="file">/app/views/layouts/_header.html.erb</div>
+<xmp>
+.
+     <li><%= link_to 'New Pin', new_pin_path %></li>
+.
+</xmp>
+
+<p>Let's update the stylesheet:</p>
+<div id="file">/app/assets/stylesheets/pins.css.scss</div>
+<xmp>
+.
+#pins {
+  margin: 0 auto;
+}
+
+.box {
+  margin: 5px;
+  width: 214px;
+}
+
+.box img {
+  width: 100%;
+}
+</xmp>
+
+<p>Update our Pins JavaScript for Masonry. The coffeescript is just syntactic sugar for javascript.</p>
+<div id="file">/app/assets/javascripts/pins.js.coffee</div>
+<xmp>
+$ ->
+  $('#pins').imagesLoaded ->
+    $('#pins').masonry
+      itemSelector: '.box'
+      isFitWidth: true
+</xmp>
+	  
+<p>Add jQuery Turbolinks</p>
+<div id="file">/app/assets/javascripts/application.js
+<xmp>
+//= require jquery.turbolinks
+</xmp>
+
+<p>Now we'll update our Pins Index for transitions and styling</p>
+<div id="file">/app/views/pins/index.html.erb</div>
+<xmp>
+<div id="pins" class="transitions-enabled">
+  <% @pins.each do |pin| %>
+    <div class="box panel panel-default">
+      <%= image_tag pin.image.url(:medium) %>
+      <div class="panel-body">
+        <%= pin.description %>
+        <%= pin.user.email if pin.user %>
+        <%= link_to 'Show', pin_path(pin) %>
+        <% if pin.user == current_user %>
+          <%= link_to 'Edit', edit_pin_path(pin) %>
+          <%= link_to 'Destroy', pin, method: :delete, data: { confirm: 'Are you sure?' } %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+</xmp>
+
+<h3>Creating a Page to show only one Pin</h3>
+<p>This is something you'd want if you want to send a link to your friend.
+
+Bootstrap Panels: http://getbootstrap.com/components/#panels
+
+Update our Pins Index for clickable images</p>
+<div id="file">/app/views/pins/index.html.erb</div>
+<xmp>
+<div id="pins" class="transitions-enabled">
+  <% @pins.each do |pin| %>
+    <div class="box panel panel-default">
+      <%= link_to image_tag(pin.image.url(:medium)), pin %>
+      <div class="panel-body">
+        <%= pin.description %><br/>
+        <strong><%= pin.user.email if pin.user %></strong>
+        <% if pin.user == current_user %>
+          <div class="actions">
+            <%= link_to 'Edit', edit_pin_path(pin) %>
+            <%= link_to 'Destroy', pin, method: :delete, data: { confirm: 'Are you sure?' } %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+</xmp>
+
+<p>Update our Pins Show page for styling </p>
+<div id="file">/app/views/pins/show.html.erb</div>
+<xmp>
+	<%= link_to 'Back', pins_path %>
+
+	<div class="row">
+	  <div class="col-md-offset-2 col-md-8">
+		<div class="panel panel-default">
+		  <div class="panel-heading center">
+			<%= image_tag @pin.image.url(:medium) %>
+		  </div>
+		  <div class="panel-body">
+			<p><%= @pin.description %></p>
+			<p><strong><%= @pin.user.email if @pin.user %></strong></p>
+
+			<% if @pin.user == current_user %>
+			 <%= link_to 'Edit', edit_pin_path(@pin) %>
+			<% end %>
+
+		  </div>
+		</div>
+	  </div>
+	</div>
+</xmp>
+
+<h3>Adding Icons with Glyphicons</h3>
+<p>We can also add icons with bootstrap
+
+Bootstrap Glyphicons: http://getbootstrap.com/components/#glyphicons
+</p>
+<div id="file">/app/views/layouts/_header.html.erb</div>
+<xmp>
+          <li>
+            <%= link_to new_pin_path do %>
+              <span class="glyphicon glyphicon-plus"></span> New Pin
+            <% end %>
+          </li>
+</xmp>
+
+<div id="file">/app/views/pins/index.html.erb</div>
+<xmp>
+            <%= link_to edit_pin_path(pin) do %>
+              <span class="glyphicon glyphicon-edit"></span>
+              Edit
+            <% end %>
+            <%= link_to pin, method: :delete, data: { confirm: 'Are you sure?' } do %>
+              <span class="glyphicon glyphicon-trash"></span>
+              Delete
+            <% end %>
+</xmp>
+			
+<div id="file">/app/views/pins/show.html.erb</div>
+<xmp>
+      <%= link_to edit_pin_path(@pin) do %>
+        <span class="glyphicon glyphicon-edit"></span>
+        Edit
+      <% end %>			
+</xmp>	  
+
+<h2>Updating the routes for the landing page</h2>
+<p>
+Update the root to load the pins when a user logs in.
+</p>
+<div id="file">/config/routes.rb</div>
+
+  root "pins#index"
+<p>
+  Make Home a partial
+  
+  Change</p>
+<div id="file">/app/views/pages/home.html.erb</div>
+
+To
+<div id="file">/app/views/pages/_home.html.erb</div>
+
+<p>Render the new Home partial on Pins Index</p>
+<div id="file">/app/views/pins/index.html.erb</div>
+
+<%= render 'pages/home' unless user_signed_in? %>
+
+<h3>Active Record Queries</h3>
+<p>
+http://guides.rubyonrails.org/active_record_querying.html
+
+Update the pins controller to show the pins in reverse chronological order.
+</p>
+<div id="file">app/controllers/pins_controller.rb</div>
+<xmp>
+ def index
+   @pins = Pin.all.order("created_at DESC")
+ end
+ </xmp>
+ <h3>Pagination</h3>
+ <p>
+ For numbered pages and creating the page views.</p>
+ 
+<div id="file"> /Gemfile</div>
+<xmp>
+gem 'will_paginate', '~> 3.0'
+</xmp>
+
+<p>Add a method to paginate to the pins_controller:
+https://github.com/mislav/will_paginate#basic-will_paginate-use
+</p>
+<div id="file">app/controllers/pins_controller.rb</div>
+<xmp>
+ def index
+   @pins = Pin.all.order("created_at DESC").paginate(:page => params[:page])
+ end
+</xmp> 
+<p>
+ We can control the limit per page:
+ </p>
+ <xmp>
+ def index
+   @pins = Pin.all.order("created_at DESC").paginate(:page => params[:page], :per_page => 8)
+ end
+ </xmp> 
+ <p>
+ To render the page links in the view:
+ Add to the very bottom of index.html.erb
+</p>
+<div id="file">app/views/pins/index.html.erb</div>
+ <xmp>
+..
+<%= will_paginate @posts %>
+ </xmp> 
+ <p>
+You can also use the paginator bootstrap gem
+
+https://github.com/nickpad/will_paginate-bootstrap#install
+</p>
+<div id="file">/Gemfile</div>
+
+ <xmp>
+..
+gem 'will_paginate-bootstrap'
+ </xmp> 
+
+<p>Update to use bootstrap for pagination display:</p>
+<div id="file">app/views/pins/index.html.erb</div>
+<xmp>
+<div class="center">
+   <%= will_paginate @posts, renderer: BootstrapPagination::Rails %>
+</div>
+</xmp>
+
+<h3>Adding Names to users </h3>
+<p>Create a database migration to add the name column:</p>
+<div id="terminal">
+$ rails generate migration AddNameToUsers name:string<br/>
+$ rake db:migrate<br/>
+$ git heroku push master<br/>
+$ heroku run rake db:migrate (optional)<br/>
+</div>
+
+<p>Let's edit the devise account settings to adk users for a name when they sign up.
+</p>
+<div id="file">app/views/devise/registrations/edit.html.erb</div>
+
+<xmp>
+     <div class="form-group">
+       <%= f.label :name %>
+       <%= f.text_field :name, class: "form-control", :autofocus => true %>
+     </div>
+</xmp>
+<p>
+“White label” attribute on form for strong parameters
+Devise Strong Parameters Documentation</p>
+<div id="file">app/controllers/application_controller.rb</div>
+
+<p>Define a method in application controller to run with a before action</p>
+ <xmp> 
+class ApplicationController < ActionController::Base
+ # Prevent CSRF attacks by raising an exception.
+ # For APIs, you may want to use :null_session instead.
+ protect_from_forgery with: :exception
+ before_filter :configure_permitted_parameters, if: :devise_controller?
+
+protected
+
+ def configure_permitted_parameters
+   devise_parameter_sanitizer.for(:sign_up) << :name
+   devise_parameter_sanitizer.for(:account_update) << :name
+ end
+end
+ </xmp> 
+ 
+<p>Add name field under devise registrations view. </p>
+<div id="file">app/views/devise/registrations/new.html.erb</div>
+
+<xmp>
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, autofocus: true, class: "form-control" %>
+      </div>
+</xmp>
+
+<h2 id="10">Adding Validations </h2>
+<p>
+Validations are the Rails way of making sure the data the users are putting to the forms is good: you can validate if the user gives us a name, if the email address is an email address, etc. 
+Active Record Validations Documentation: http://edgeguides.rubyonrails.org/active_record_validations.html
+
+Let's try making sure a user's name isn't blank, and add validations for pins:
+</p>
+<div id="file">app/models/user.rb</div>
+<xmp>
+  validates :name, presence: true
+</xmp>
+  
+<div id="file">app/models/pins.rb</div>
+<xmp>
+  validates :image, presence: true
+  validates :description, presence: true  
+</xmp>
+  
+ <p>Now we can replace the emails with names so everyone doesn't see your email address.
+ </p>
+ 
+<div id="file">app/views/pins/index.html.erb</div>
+<xmp>
+        <%= pin.user.name if pin.user %>
+</xmp>
+		
+<div id="file">app/views/pins/show.html.erb</div>
+<xmp>
+        <p><strong><%= @pin.user.name if @pin.user %></strong></p>
+</xmp>
+
+<h2 id="11">Other Ruby Resources </h2>
+<p>
+http://railscasts.com/episodes/25-sql-injection
+http://railscasts.com/?search=security
+http://ruby.railstutorial.org/
+http://www.codecademy.com/tracks/ruby
+</p>
+</body>
+</html>

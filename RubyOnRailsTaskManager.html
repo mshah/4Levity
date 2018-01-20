@@ -1,0 +1,931 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Amethysta|Duru+Sans">
+    <style>
+	h1{
+		color:#DB3556;	
+	}
+	ol{
+		color: #BA1E4A;
+	}
+	a{
+		color: #BA1E4A;
+		text-decoration: none;
+	}
+	h2{
+		color:#88BAA3;
+	}
+	body{
+		background-color:#EAEDE4;
+	}
+      p {
+        font-family: 'Amethysta', serif;
+		font-size: 20px;
+		color:#254F4D;
+      }
+	  xmp{
+		font-family: 'Duru Sans', sans-serif;
+		background-color:#E4E6C3;
+		border:1px solid #BA1E4A;
+		font-size: 16px;
+		color: #BA1E4A;
+	  }
+	  #terminal{
+		font-family: 'Duru Sans', sans-serif;
+		font-size: 14px;
+		border:1px solid black;
+		color:#88BAA3;
+		background-color:#6E6E6E;
+	  }		  
+	  #file{
+		font-family: 'Duru Sans', sans-serif;
+		font-size: 14px;
+		color:#848484;
+	  }	  
+    </style>
+</head>
+<body>
+	<h1>How to: Task Manager App</h1>
+	<h2>Getting Started: Simple Homepage and the Bootstrap Front End Framework</h2>
+	<p>
+		I'm using my RubyOnRailsQuickStart guide to get started on a new RoR project: a task manager.
+	</p>
+
+	<div id="terminal">
+		$ rails new taskManager
+	</div>
+	<p>
+		Generate a new homepage
+	</p>
+	<div id="terminal">
+		$ rails generate controller pages home
+	</div>
+	<p>
+		Add the route to our homepage. 
+	</p>
+		<div id="file">/config/routes.rb</div> 
+	<xmp>
+		get "pages/home"
+	</xmp>
+	<p>Change the above to</p>
+	<xmp>
+		root "pages#home"
+	</xmp>
+	<p>I'll just update the landing page so we can see the difference:</p>
+	<div id="file">app/views/pages/home.html.erb</div> 
+	<xmp>
+		<h1>Welcome to my task manager app</h1>
+	</xmp>
+	<p>Let's add bootstrap</p>
+
+
+	<div id="file">/Gemfile</div> 
+
+	<xmp>
+		gem 'bootstrap-sass'
+	</xmp>
+	<p>After installing a new gem:</p>
+	<div id="terminal">
+		$ bundle install
+	</div>
+	<p>
+		We'll create a new SCSS file, which is a precompiler for CSS:
+	</p>
+	<div id="file">app/assets/stylesheets/bootstrap_and_customization.css.scss</div> 
+	<xmp>
+		@import 'bootstrap';
+	</xmp>
+	<p>
+		Now we can restart the server.
+	</p>
+	<div id="terminal">
+		$ rails server
+	</div>
+	<p>
+		Now we want the html we're rendering to use the bootstrap css:
+	</p>
+	<div id="file">views/layouts/application.html.erb</div>
+	<xmp>	
+		 <div class="container">
+			  <%= yield %>
+		 </div>
+	</xmp>
+	<p>
+	Create the partial header for the navigation bar
+	</p>
+	<div id="file">app/views/layouts/_header.html.erb</div>
+	<p>
+	Add the link to the partial and the navigation bar:
+	</p>
+	<div id="file">app/views/layouts/application.html.erb</div>
+	<xmp>
+		 <%= render 'layouts/header' %>
+	</xmp>
+
+	<div id="file">app/views/layouts/_header.html.erb</div>
+	<xmp>
+		<nav class="navbar navbar-default" role="navigation">
+		  <!-- Brand and toggle get grouped for better mobile display -->
+		  <div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+			  <span class="sr-only">Toggle navigation</span>
+			  <span class="icon-bar"></span>
+			  <span class="icon-bar"></span>
+			  <span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">Task Manager</a>
+		  </div>
+
+		  <!-- Collect the nav links, forms, and other content for toggling -->
+		  <div class="collapse navbar-collapse navbar-ex1-collapse">
+			<ul class="nav navbar-nav navbar-right">
+			  <li><%= link_to "Home", root_path %></li>
+			</ul>
+		  </div><!-- /.navbar-collapse -->
+		</nav>
+	</xmp>	
+
+	<p>
+		We'll need to update our javascript to require bootstrap:
+	</p>
+	<div id="file">app/assets/javascripts/application.js</div>
+	<xmp>
+		...
+		//= require jquery
+		//= require jquery_ujs
+		//= require bootstrap
+		//= require turbolinks
+		//= require_tree .
+	</xmp>	 
+	<p>
+		We'll add a viewport for the intial load:
+	</p>
+	<div id="file">views/layouts/application.html.erb</div>
+	<xmp>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</xmp>	
+	
+	<h2>Devise User Authentication</h2>	
+	
+	<p>Now we'll add and install the devise gem to handle users.</p>
+		<div id="file">/Gemfile</div>
+		<xmp>
+			gem 'devise'
+		</xmp>
+
+	<div id="terminal">
+	$ bundle install<br/>
+	$ rails generate devise:install
+	</div>		
+
+	<p>Update our view and header partial to try to log us in</p>	
+	<div id="file">app/views/pages/home.html.erb</div>
+	<xmp>
+		<div class="jumbotron center">
+			 <h1>Welcome to my app!</h1>
+			 <% if user_signed_in? %>
+				  # do something
+			 <% else %>
+			   <p>
+				 <%= link_to "Log in", new_user_session_path, class: "btn btn-default btn-lg" %>
+				 <%= link_to "Sign up", new_user_registration_path, class: "btn btn-primary btn-lg" %>
+			   </p>
+		  <% end %>  
+		</div>
+	</xmp>
+
+	<div id="file">app/views/layout/_header.html.erb</div>
+	<xmp>
+		<ul class="nav navbar-nav navbar-right">
+			<li><%= link_to "Home", root_path %></li>
+			<li><%= link_to "About", about_path %></li>
+			<% if user_signed_in? %>
+			  <li><%= link_to "Account Settings", edit_user_registration_path %></li>
+			  <li><%= link_to "Log out", destroy_user_session_path, method: :delete %></li>
+			<% else %>
+			  <li><%= link_to "Sign in", new_user_session_path %></li>
+			<% end %>
+		</ul>
+	</xmp>
+
+	<h2>Modeling Our Tasks</h2>	
+	<p>Since everything in ruby is a resource, we need to define what kinds of objects we want and hour they relate to each other. We know we have users and they can have many goals. A goal can have many tasks. Tasks can have many subtasks. Tasks and subtasks can have due dates, completion dates, and status (enum: Needs work, on track, completed). I also want a concept of charts: daily, weekly, and monthly task chart: things like waking up early, taking a 30 min walk, or eating your veggies. We'll use scaffolds, which generate the model, view and controller parts for us all at once (as well as test code).</p>
+	<div id="terminal">
+	$ rails generate scaffold tasks description:string dueData:timestamp progress:integer<br/>
+	$ rake db:migrate #run the migration
+	</div>	
+	<p>Our model, controller and views have all been generated for us. We'll add our authentication in for creating a new task</p>
+		<div id="file">app/views/tasks/index.html.erb</div>
+	<xmp>
+		<% if user_signed_in? %>
+		  <%= link_to 'New Task', new_task_path %>
+		<% end %>
+	</xmp>
+	<p>We can do the same thing for habits (the things we can check of daily, weekly, or monthly) and goals. For now we'll keep goals general, just as a description string and a done boolean.</p>	
+	<div id="terminal">
+	$ rails generate scaffold habits description:string done:boolean interval:integer<br/>
+	$ rails generate scaffold goals description:string done:boolean<br/>	
+	$ rake db:migrate #run the migration
+	</div>
+	<div id="file">app/views/habits/index.html.erb</div>
+	<xmp>
+		<% if user_signed_in? %>
+		  <%= link_to 'New Habit', new_habit_path %>
+		<% end %>
+	</xmp>
+	<div id="file">app/views/habits/goals.html.erb</div>
+	<xmp>
+		<% if user_signed_in? %>
+		  <%= link_to 'New Goal', new_goal_path %>
+		<% end %>
+	</xmp>
+	<p>Let's update our nav bar to show these new items </p>
+	<div id="file">app/views/habits/goals.html.erb</div>
+	<xmp>
+		  <!-- Collect the nav links, forms, and other content for toggling -->
+		  <div class="collapse navbar-collapse navbar-ex1-collapse">
+			<ul class="nav navbar-nav navbar-right">
+				<li><%= link_to "Goals", root_path %></li>
+				<li><%= link_to "Tasks", tasks_path %></li>
+				<li><%= link_to "Habits", habits_path %></li>                
+				<% if user_signed_in? %>
+				  <li><%= link_to "Account Settings", edit_user_registration_path %></li>
+				  <li><%= link_to "Log out", destroy_user_session_path, method: :delete %></li>
+				<% else %>
+				  <li><%= link_to "Sign in", new_user_session_path %></li>
+				<% end %>
+				  <li>
+					<%= link_to new_goal_path do %>
+					  <span class="glyphicon glyphicon-plus"></span> New Goal
+					<% end %>
+				  </li>
+			</ul>
+		  </div><!-- /.navbar-collapse -->
+	</xmp>
+	<div id="file">config/routes.rb</div>
+	<xmp>
+		TaskManager::Application.routes.draw do
+		  resources :goals
+
+		  resources :habits
+
+		  resources :tasks
+
+		  devise_for :users
+		  root "goals#index"
+		  get "goals" => "pages#goals"
+		  get "tasks" => "pages#tasks"
+		  get "habits" => "pages#habits"  
+		end
+	</xmp>	
+	<p>We also want to make sure that we only can see, edit, etc the goals, tasks and habits that belong to us. That means we'll need to add some associations. We need to associate users to habits, goals, and tasks. But additionally, tasks and habits can belong to goals and tasks can even belong to other tasks (subtasks) and we want to capture this relationship. For the user association we'll use some of devise's methods to build the objects. So we'll need to update the model, controllers, and views to reflect this.</p>	
+	<div id="file">app/models/task.rb</div>
+	<xmp>
+		class Task < ActiveRecord::Base
+			belongs_to :user
+			belongs_to :goal
+		end
+	</xmp>		
+	<div id="file">app/models/habit.rb</div>
+	<xmp>
+		class Habit < ActiveRecord::Base
+			belongs_to :user
+			belongs_to :goal
+		end
+	</xmp>		
+	<div id="file">app/models/goal.rb</div>
+	<xmp>
+		class Goal < ActiveRecord::Base
+			belongs_to :user
+			has_many :tasks
+			has_many :habits			
+		end
+	</xmp>	
+	<div id="file">app/models/user.rb</div>
+	<xmp>
+		class User < ActiveRecord::Base
+		  devise :database_authenticatable, :registerable,
+				 :recoverable, :rememberable, :trackable, :validatable
+		  has_many :goals
+		  has_many :tasks
+		  has_many :habits
+		end
+	</xmp>	
+	 <div id="terminal">
+	 $ rails generate migration add_user_id_to_habits user_id:integer:index<br/>
+	 $ rails generate migration add_user_id_to_goals user_id:integer:index<br/>
+	 $ rails generate migration add_user_id_to_tasks user_id:integer:index<br/>
+	 $ rails generate migration add_goal_id_to_tasks goal_id:integer:index<br/>	
+	 $ rails generate migration add_goal_id_to_habits goal_id:integer:index<br/>	 
+	 $ rake db:migrate<br/>
+	  </div>
+	<div id="file">app/controller/goals_controller.rb</div>
+	<xmp>
+		class GoalsController < ApplicationController
+		  before_action :correct_user, only: [:show, :edit, :update, :destroy]
+		  before_action :authenticate_user!, except: [:index]
+		.
+		.		  
+		  def index
+			@goals = Goal.all
+		  end		  
+		.
+		.		
+		  def new
+			@goal = current_user.goals.build
+		  end
+
+		  # POST /goals
+		  # POST /goals.json
+		  def create
+			@goal = current_user.goals.build(goal_params)
+		.
+		.
+		  private
+			def correct_user
+			  @goal = current_user.goals.find_by(id: params[:id])
+			  redirect_to goals_path, notice: "Not authorized to edit this goal" if @goal.nil?
+			end  			
+	</xmp>	
+	<div id="file">app/controller/habits_controller.rb</div>
+	<xmp>
+		class HabitsController < ApplicationController
+		  before_action :correct_user, only: [:show, :edit, :update, :destroy]
+		  before_action :authenticate_user!, except: [:index]	
+		.
+		.		  
+		  def index
+			@habits = Habit.all
+		  end		  
+		.
+		.			  
+		.
+		.		  
+		  def new
+			@habit = current_user.habits.build
+		  end
+
+		  # POST /habits
+		  # POST /habits.json
+		  def create
+			@habit = current_user.habits.build(habit_params)
+		.
+		.
+		  private
+			def correct_user
+			  @habit = current_user.habits.find_by(id: params[:id])
+			  redirect_to habits_path, notice: "Not authorized to edit this habit" if @habit.nil?
+			end  			
+	</xmp>	
+	<div id="file">app/controller/tasks_controller.rb</div>
+	<xmp>
+		class TasksController < ApplicationController
+		  before_action :correct_user, only: [:show, :edit, :update, :destroy]
+		  before_action :authenticate_user!, except: [:index]
+		.		  
+		  def index
+			@tasks = Task.all
+		  end			  
+		.
+		.		
+		  def new
+			@task = current_user.tasks.build
+		  end
+
+		  # POST /task
+		  # POST /task.json
+		  def create
+			@task = current_user.tasks.build(task_params)
+		.
+		.
+		  private
+			def correct_user
+			  @task = current_user.tasks.find_by(id: params[:id])
+			  redirect_to tasks_path, notice: "Not authorized to edit this task" if @task.nil?
+			end  		
+	</xmp>	
+	<div id="file">app/views/tasks/index.html.erb</div>
+	<xmp>
+			<h1>Listing tasks</h1>
+			<br>
+			<% if user_signed_in? %>
+			  <table>
+				<thead>
+				  <tr>
+					<th>Description</th>
+					<th>Due date</th>
+					<th>Progress</th>
+					<th></th>
+					<th></th>
+					<th></th>
+				  </tr>
+				</thead>
+
+				<tbody>
+				  <% @tasks.each do |task| %>
+					<% if task.user == current_user %>
+					  <td><%= task.description %></td>
+					  <td><%= task.dueDate %></td>
+					  <td><%= task.progress %></td>
+					  <td><%= link_to 'Show', task %></td>    
+					  <div class="actions">
+						<%= link_to edit_task_path(task) do %>
+						<span class="glyphicon glyphicon-edit"></span>
+						  Edit
+						<% end %>
+						<%= link_to task, method: :delete, data: { confirm: 'Are you sure?' } do %>
+						<span class="glyphicon glyphicon-trash"></span>
+						  Delete
+						<% end %>
+					  </div>
+					<% end %>
+				  <% end %>
+				</tbody>
+			  </table>
+
+			  <%= link_to 'New Task', new_task_path %>
+			<% end %>
+		
+	</xmp>
+	<p>We'll update the views the same way for the goals and habits also, which I did not list out above. Now let's update the UI and stylize this a bit more. We want to list out the tasks and habits in rows. At this point I'm also realizing Ruby doesn't have the notion of enums like other languages I'm used to (C++\Java), so we'll need to add strings as these values and just drop these integers from our table. So instead of trying to migrate this, I'm just going to roll all the way back, edit the migration files and then migrate again. So now I'll edit my old migration files and change the integer for interval, progress, etc to strings and then do a db:migrate again.</p>
+	 <div id="terminal">
+		$ rake db:rollback STEP=9<br/>		
+		$ rake db:migrate<br/>		
+	 </div>	
+	 <p> So we'll start back up the server and look at our data. So since we're changing our model, we need to update the edit forms also. So we'll change the below. We also want to make sure users only can select specific strings that we allow. Let's add some validation into the model about what string values are acceptable.</p>
+	<div id="file">app/views/habits/_form.html.erb</div>
+	<xmp>
+	  <div class="field">
+		<%= f.label :interval %><br>
+		<%= f.number_field :interval %>
+	  </div>		
+	</xmp>	
+	<p>And change it to the below, we'll do this for the other forms too.</p>
+	<xmp>
+	  <div class="field">
+		<%= f.label :interval %><br>
+		<%= f.select :interval, options_for_select(%w[Daily Weekly Monthly]) %>    
+	  </div>	
+	</xmp>	
+	<div id="file">app/models/habit.rb</div>
+	<xmp>
+		validates_format_of :interval, :with => /\A(?:(Daily)|(Weekly)|(Monthly))\Z/, :on => :create		
+	</xmp>	
+	<div id="file">app/models/task.rb</div>
+	<xmp>
+		validates_format_of :progress, :with => /\A(?:(Not Started)|(Needs Work)|(On Track)|(Complete))\Z/, :on => :create		
+	</xmp>
+	<div id="file">app/views/tasks/_form.html.erb</div>
+	<xmp>
+	  <div class="field">
+		<%= f.label :interval %><br>
+		<%= f.number_field :interval %>
+	  </div>		
+	</xmp>	
+	<p>So now we have a nice view of everything and we can update things. The habits should reset on their intervals and when we do this reset we could keep track of streaks. We'll need to run a cron job (set up a periodic task) to update the habits. We also know we only need to run this once a day. That might not be strictly true, as different users in different timezones would want it reset at different times, but for simplicity we'll just do midnight for us. Update: This does not work on windows, but if you're on a system that supports cron, you can do this locally: We'll use the whenever gem https://github.com/javan/whenever and follow the instructions for installing and setting up the scheduler.</p>
+	<div id="terminal">$gem install whenever</div>
+	<div id="file">app/models/habit.rb</div>
+	<xmp>
+	gem 'whenever', :require=> false
+	</xmp>
+	<div id="terminal">$bundle install</div>
+	<div id="terminal">$wheneverize .</div>
+	<p>This creates a schedule.rb config file, in this file we'll be able to call rake tasks. In your application take a look at the Rakefile. </p>	
+	<div id="file">/Rakefile</div>
+	<xmp>
+	# Add your own tasks in files placed in lib/tasks ending in .rake,
+	# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
+	</xmp>	
+	<p>This means we can create a new file, let's name it reset_habits.rake and put it in /lib/tasks. Rake tasks let us call things command line, in our case we'll want to be able to clear all the :done values of our habits periodicially. Create some test data using your app, and then run the rails console from the terminal. Inspect a habit. </p>
+	<div id="terminal">$rails console</div>	
+	<div id="terminal">>Habit.inspect </div>	
+	<p>Now you have a view into the state of the database, you'll be able to test if your rake command is working by running it, and then rechecking to see if it cleared the done flag on the Habits. We can get a little bit more familiar with rake tasks, below are some examples you add and run from the commandline.</p>
+	<div id="file">/Rakefile</div>
+	<xmp>
+			namespace :demotask do
+			
+			  desc "display the current environment of rake"
+			  task :current_environment do
+				puts "You are running rake task in #{Rails.env} environment"
+			  end
+
+			  desc "count number of records in given model table"
+			  task :count_records, [:model] => :environment do |t, args| # task with both arguments and dependency
+				args.with_defaults(:model => "Habit" )
+				model_calss_name = Object.const_get(args.model) # this is very important as when you#pass argument it come as a string, so you must convert it to model class
+				puts "No of records is #{model_calss_name.count}"
+			  end
+
+			  desc "see what happen when you call a modal method without loading environment"
+			  task :without_environment do
+				puts Habit.first.done
+			  end
+			  
+			  desc "load environment before operating on any model object"
+			  task :with_environment => :environment do
+				puts Habit.first.done
+			  end  
+			  
+			 end
+	</xmp>	
+	<p>We can run some of these commands from the command line and see what they do. Above there is a method that does not pass the environment, try running it. You'll see an error message, now try running the one with environment.</p>	
+	<div id="terminal">$rake demotask:without_environment<br>
+	$rake aborted!<br>
+	uninitialized constant User<br>
+	$rake demotask:with_environment!<br>
+	dependency<br>	
+	true<br>	
+	</div>
+	<p>So we can see from count_records how to access the model, and we will update it using the ActiveRecord update method. We can also add some logging to see what's going on.</p>	
+	<div id="file">/Rakefile</div>
+	<xmp>
+		namespace :habits do
+			desc "Rake task that resets everything daily"
+			task :resetHeroku => :environment do
+				habits = Habit.all
+				time = Time.new
+				habits.each do |habit|
+					if habit.interval == 'Daily'
+						habit.update(done: false)
+					end	
+					if habit.interval == 'Weekly'
+						if time.wday == 0
+							habit.update(done: false)
+						end
+					end					
+					if habit.interval == 'Monthly'
+						if time.day == 1
+							habit.update(done: false)
+						end
+					end
+				end	
+			end	
+	</xmp>	
+	<p>Using the rails console you can toggle that, and test out the rest of the resets needed: resetDaily, resetWeekly, resetMonthly. Since I"m on a windows machine and the gem above which would work for a unix system with a cron file, I'm going to instead deploy this whole thing to the cloud and use heroku's scheduler to call the rake tasks.</p>		
+	<h2 id="3">Deploying to the Cloud with Heroku and using Heroku Scheduler</h2>
+	<p>Heroku lets us deploy the app to the cloud. You'll need to sign up for an heroku account. It only uses a postgres database though so you will need to update your gemfile to use this in production.</p>
+
+	<div id="file">/Gemfile</div>
+	<xmp>
+		group :development, :test do
+			 gem 'sqlite3'
+		end
+
+		group :production do
+			 gem 'pg'
+			 gem 'rails_12factor'
+		end
+	</xmp>
+	<div id="terminal">
+		$heroku login <br>
+		Email: (enter your email) <br>
+		Password (enter your password - it will show blank and that's fine) <br>
+		$ heroku keys:add<br>
+		$ heroku create<br>
+		$ git push heroku master<br>
+		$ heroku run rake db:migrate<br>
+		$ heroku addons:add scheduler:standard<br>
+	</div>	
+	<p>Heroku's documentation: https://devcenter.heroku.com/articles/scheduler#installing-the-add-on is pretty good at describing how to set up the scheduler. The schedule will just run our rake tasks that reset the habits. You can test them on heroku by setting up some data. The standard schedule for heroku runs once a day at most, but we can bundle our updates since we also always need to update once a day. Let's work on the look and feel of the app.<p>
+	<div id="terminal">$ heroku run rake habits:resetHeroku</div>
+	<h2 id="3">Customizing with Bootstrap</h2>
+	<p>We want to update the look of this, but also how it is to use. Right now if you want to edit something you go to another form, etc. We want to streamline to workflow as much as possible. After we create a new task, etc. let's go back to the list of them not just to the new one we created. We'll update the redirect on save to go back to the habits_url. This keeps reordering the tasks when I go back which is kind of annoying, but we can always list them sorted in alphabetical order which will keep it consistent.</p>	
+	<div id="file">/app/controllers/habits_controller.rb</div>
+	<xmp>
+		  def create
+			@habit = current_user.habits.build(habit_params)
+
+			respond_to do |format|
+			  if @habit.save
+				format.html { redirect_to habits_url, notice: 'Habit was successfully created.' }
+			  else
+				format.html { render action: 'new' }
+			  end
+			end
+		  end
+	</xmp>	
+	<p>I want to represent progress with image icons: red, yellow, and green embossed circles. Right now the columns float in width, but these images are fixed size as is the trashcan glyph. It would be nice if these always anchored on the right side, instead of floating towards the left when the screen was stretched. We can solve that problem by setting column widths in the tables that display them. We'll also do similar things to Tasks and Goals, fill in the "Done" value when they are created since we want to always create them in a "not done" progress state.</p>		
+	<div id="file">/app/view/goals/index.html.erb</div>
+	<xmp>
+		<h1>I want to...</h1>
+		<br>
+
+		<% if user_signed_in? %>
+		<div class="panel panel-primary">
+		  <!-- Default panel contents -->
+		  <div id="test" class="panel-heading">Goals
+			  <%= link_to '', new_goal_path, class: "glyphicon glyphicon-plus" %>
+		  </div>
+		  <table class="table table-condensed table-hover">
+			<col>
+			<col width="20">
+			<col width="20">
+			<tbody>
+			  <% @goals.each do |goal| %>
+				<% if goal.user == current_user %>
+				  <tr>
+					<td>
+					  <%= link_to edit_goal_path(goal) do %>
+					  <%= goal.description %>
+					  <% end %>
+					</td>
+					<td>
+						<% if goal.progress == 'NotStarted' %>
+						  <%= image_tag("redProgress.png", :alt => "Not Started") %>
+						<% elsif goal.progress == 'NeedsWork' %>
+						  <%= image_tag("yellowProgress.png", :alt => "Needs Work") %>
+						<% elsif goal.progress == 'OnTrack' %>
+						  <%= image_tag("greenProgress.png", :alt => "On Track") %>
+						<% else %>
+						  <span class="glyphicon glyphicon-ok"></span>                                       
+						<% end %>   
+					</td>            
+					<td>
+					  <%= link_to goal, method: :delete, data: { confirm: 'Are you sure?' } do %>
+					  <span class="glyphicon glyphicon-trash"></span>
+					  <% end %>
+					</td> 
+				  </tr>
+				<% end %>
+			  <% end %>
+			</tbody>
+		  </table>
+		</div>
+		<% end %>
+	</xmp>
+	<p>With the habits, we want to add the plus glyph to every entry, but when we go to a new form, we don't need to see the interval since we expect it for the table we have the button on. So we need a way to set this automatically and differently based on which plus glpyh is clicked. We'll add three new routes and create three new methods in our controller. We'll also new three new embedded ruby view files: newdaily.html.erb, newweekly.html.erb, and newmonthly.html.erb. We'll use the code from the partial _form.html.erb and replicate it here, except filling in the interval and done with hidden values. We'll also update the partial to just take the interval of the object in a hidden field, since we don't want it to revert to Daily everytime we try to edit. It would do this since it's the first value in our select box, and that's annoying to keep remembering your interval.</p>
+	<div id="file">/app/config/routes.rb</div>
+	<xmp>
+	  # Add routes for creating new daily, weekly, and monthly habits
+	  get "new_dailyhabit" => "habits#newdaily"
+	  get "new_weeklyhabit" => "habits#newweekly"  
+	  get "new_monthlyhabit" => "habits#newmonthly"  
+	</xmp>	
+	<div id="file">/app/controller/habits_controller.rb</div>
+	<xmp>
+		# GET /habits/dailynew
+		  def newdaily
+			@habit = current_user.habits.build
+		  end
+
+		# GET /habits/weeklynew
+		  def newweekly
+			@habit = current_user.habits.build
+		  end
+
+		# GET /habits/monthlynew
+		  def newmonthly
+			@habit = current_user.habits.build
+		  end 
+	</xmp>	
+	<div id="file">/app/views/newdaily.html.erb</div>
+	<xmp>
+		<h1>New Daily habit</h1>
+		<%= form_for(@habit) do |f| %>
+		  <% if @habit.errors.any? %>
+			<div id="error_explanation">
+			  <h2><%= pluralize(@habit.errors.count, "error") %> prohibited this habit from being saved:</h2>
+
+			  <ul>
+			  <% @habit.errors.full_messages.each do |msg| %>
+				<li><%= msg %></li>
+			  <% end %>
+			  </ul>
+			</div>
+		  <% end %>
+
+		  <div class="field">
+			<%= f.label :description %><br>
+			<%= f.text_field :description %>
+		  </div>
+		  <%= f.hidden_field :done, :value => false %>
+		  <%= f.hidden_field :interval, :value => 'Daily' %>
+		  <div class="actions">
+			<%= f.submit %>
+		  </div>
+		<% end %>
+
+		<%= link_to 'Back', habits_path %>
+	</xmp>		
+	<div id="file">/app/views/_form.html.erb</div>
+	<xmp>
+		<%= form_for(@habit) do |f| %>
+		  <% if @habit.errors.any? %>
+			<div id="error_explanation">
+			  <h2><%= pluralize(@habit.errors.count, "error") %> prohibited this habit from being saved:</h2>
+
+			  <ul>
+			  <% @habit.errors.full_messages.each do |msg| %>
+				<li><%= msg %></li>
+			  <% end %>
+			  </ul>
+			</div>
+		  <% end %>
+
+		  <div class="field">
+			<%= f.label :description %><br>
+			<%= f.text_field :description %>
+		  </div>
+		  <div class="field">
+			<%= f.check_box :done %>
+			<%= f.label :done %>   
+		  </div> 
+		  <%= f.hidden_field :interval, :value => @habit.interval%>
+		  <div class="actions">
+			<%= f.submit %>
+		  </div>
+		<% end %>
+	</xmp>	
+	<p>The above changes have made using our apps, creating new objects and editing objects a little easier. We still don't have the satisfaction of being able to click a check mark on our habits page, and have the check mark get set. We'll add a method to the controller that can toggle "done" on our habits, add a route, and add a link from the view</p>	
+	<div id="file">/app/config/routes.rb</div>
+	<xmp>
+	  get "toggle_habit" => "habits#toggle_action"    
+	</xmp>	
+	<div id="file">/app/controllers/habits_controller.rb</div>
+	<xmp>
+	  def toggle_action
+		respond_to do |format|
+		  @habit = Habit.find(params[:id])
+		  if @habit.done?
+			@habit.done = false
+		  else
+			@habit.done = true
+		  end
+		  @habit.update_attributes(params[:done])
+		  format.html { redirect_to habits_url, notice: 'Habit was successfully updated.' }
+		end
+	  end  
+	</xmp>	
+	<div id="file">/app/views/habits/index.html.erb</div>
+	<xmp>
+		<tbody>
+		  <% @habits.each do |habit| %>
+			<% if habit.user == current_user %>
+			<% if habit.interval == 'Weekly' %>        
+			  <tr>
+				  <td>
+					<%= link_to edit_habit_path(habit) do %>
+					  <%= habit.description %>
+					<% end %>
+				  </td>
+				  <td>
+					  <% if habit.done == true %>
+						<%= link_to ''.html_safe, {:action => 'toggle_action', :id =>habit.id}, class: 'glyphicon glyphicon-ok' %>
+					  <% else %>
+						<%= link_to ''.html_safe, {:action => 'toggle_action', :id =>habit.id}, class: 'glyphicon glyphicon-remove' %>                                
+					  <% end %>       
+				  </td>
+				<td>
+				  <span class="glyphicon glyphicon-trash"></span>
+				  <%= link_to habit, method: :delete, data: { confirm: 'Are you sure?' } do %>
+				  <% end %>
+				</td> 
+			  </tr>
+			<% end %>
+			<% end %>
+		  <% end %>
+		</tbody>
+	</xmp>	
+	<h2>Adding streaks for habits and due dates for tasks</h2>
+	<p>The last section was heavily focused on UX improvements, and there are still more things we can do to streamline using the app, such as inline editing of items. Now I want to focus improving how users can set the date for a task. Currently, it's a timestamp field with very fine grain configuration: users can select the month, day, year, and time. That's a little much though, you have to always remember what day it is when you're making a task. Often in your head, you think, I want to do this thing tomorrow, or next week. So let's make it more intuitive to set this date field.</p>	
+	<div id="file">/app/view/tasks/index.html.erb</div>
+	<xmp>
+          <td>
+            <%= link_to edit_task_path(task) do %>
+            <%= task.description %>
+            <% end %>
+          </td>
+          <td>
+            <%= task.dueDate.strftime("%A %B %d") %>
+          </td>  
+	</xmp>	
+	<p>In the above, we've changed how the date displays to just be the day of the week (%A), the month (%B) and the day (%d). But setting the date in our edit and new forms still doesn't look ideal. We have to individually pick the month, day and year. Instead of using the default, we'll use the bootstrap date picker gem and use some coffeescript to jquery the focus action on the text field.</p>
+	<img src="./images/datepicker.png"/>
+	<div id="file">/Gemfile</div>
+	<xmp>
+gem 'bootstrap-datepicker-rails'
+	</xmp>	
+	<div id="file">/app/assets/javascripts/application.js</div>
+	<xmp>
+//= require bootstrap-datepicker
+	</xmp>	
+	<div id="file">/app/model/task.rb</div>
+	<xmp>
+	validates :dueDate, :presence => true
+	</xmp>	
+	<div id="file">/app/views/tasks/_form.html.erb</div>
+	<xmp>
+  <div class="field">
+    <%= f.label :dueDate %><br> 
+    <%= f.text_field :dueDate, :value => @task.dueDate.strftime("%A %B %d"), 'data-behaviour' => 'datepicker' %>
+    <!-- todo: write below as coffee script -->
+    <script type="text/javascript">
+      $(document).on("focus", "[data-behaviour~='datepicker']", function(e){
+          $(this).datepicker({"format": "yyyy-mm-dd", "weekStart": 1, "autoclose": true, "todayHighlight": true})
+      });
+    </script>
+  </div>
+	</xmp>
+	<p>We can edit our tasks and use a nice calendar for a date picker. We've added validation for the date since a blank date will not work for the datepicker, meaning users cannot create or edit a task without adding a due date.</p>
+
+	
+	<h2>Associating Tasks and Habits with Goals</h2>
+	<p>We have tasks and habits and it would be nice to associate them to our goals. Earlier when we did the modeling we already specified that Task and Habit belongs_to : goal, but we haven't yet specified that Goal has_many tasks or habits, so let's do that now. We'll also need to update the database so the tasks and habits can point to owner goals.</p>	
+	
+	<div id="file">/app/model/goal.rb</div>
+	<xmp>
+		class Goal < ActiveRecord::Base
+			belongs_to :user
+			has_many :tasks
+			has_many :habits
+			validates_format_of :progress, :with => /\A(?:(NotStarted)|(NeedsWork)|(OnTrack)|(Complete))\Z/, :on => :create
+		end
+	</xmp>	
+	<p>It would be nice to display under each goal the tasks and habits related to them on the Goals page.</p>	
+	</body>
+	<div id="terminal">$ rails generate migration add_goalID_to_tasks<br/>
+						$ rails generate migration add_goalID_to_habits
+		</div>
+		<div id="file">db/migration/timestamp_add_goalID_to_tasks.rb</div>
+	<xmp>
+		class AddGoalIdToTasks < ActiveRecord::Migration
+		  def change
+			add_column :tasks, :goal_id, :integer
+			add_index :tasks, :goal_id
+		  end
+		end
+
+	<div id="terminal">$ rails generate migration goals<br/>
+						$ rails generate migration tasks
+		</div>
+		<div id="file">db/migration/timestamp_tasks.rb</div>
+	<xmp>
+		class Tasks < ActiveRecord::Migration
+		  def change
+			reversible do |dir|
+			  change_table :tasks do |t|
+				dir.up   { t.change :progress, :integer }
+				dir.down { t.change :progress, :string }
+			  end
+			end
+		  end
+		end
+	</xmp>	
+	<div id="terminal">$ rails db:migrate</div>		
+	<p>We'll need to make sure we can save this goal_id onto our record and we'll want to update the view so we can set it. Let's associate our tasks to the goals in our test data.</p>
+	<div id="file">app/controllers/tasks_controller.rb</div>
+	<xmp>	
+	 def task_params
+      params.require(:task).permit(:description, :dueDate, :progress, :goal_id)
+    end
+	</xmp>	
+	<div id="file">app/views/tasks/_form.html.erb</div>
+	<xmp>	
+			<div class="field">
+			<%= f.label "Goal" %><br>
+			<!-- Todo: only for our user -->
+			<%= f.select :goal_id, options_for_select(Goal.all.collect{ |goal| [goal.description, goal.id] }) %>
+		  </div> 
+	</xmp>	
+	<p>The goals page should show the associated tasks and habits for that goal.</p>
+
+	<div id="file">app/views/goals/index.html.erb</div>
+	<xmp>	
+
+	</xmp>	
+
+
+
+
+
+
+
+
+
+	
+	<p>I decided to update the strings in the selection box, thus far I had been storing the progress as strings, but if I store them as an interval I could add up and down arrows to let users easily bump them up or down. So I migrated the tasks and goals table to change the progress string to an integer.</p>
+
+	<div id="file">app/views/tasks/_form.html.erb</div>
+	<xmp>
+	  <div class="field">
+		<%= f.label :progress %><br>
+		<%= f.select(:progress, options_for_select({"Not Started" => 0, "Needs Work" => 1, "On Track" => 2, "Complete" => 3}, @task.progress), :prompt => "Choose") %>
+	   </div> 
+	</xmp>	
+		<div id="file">app/views/tasks/index.html.erb</div>	
+	<xmp>
+          <td>
+            <%= task.progress %>
+              <% if task.progress == 0 %>
+                <%= image_tag("redProgress3.png", :alt => "Not Started") %>
+              <% elsif task.progress == 1 %>
+                <%= image_tag("yellowProgress3.png", :alt => "Needs Work") %>
+              <% elsif task.progress == 2 %>
+                <%= image_tag("greenProgress3.png", :alt => "On Track") %>
+              <% else %>
+                <span class="glyphicon glyphicon-ok"></span>                              
+              <% end %> 
+          </td>  	
+	</xmp>
+	
+</html>
